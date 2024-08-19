@@ -10,26 +10,27 @@
 </template>
 
 <style scoped>
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f0f0f0;
+body, html {
   margin: 0;
+  padding: 0;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  background-color: #f0f0f0;
 }
 
 .container {
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  max-width: 100%;
-  width: 100%;
   max-width: 600px;
+  width: 100%;
   padding: 20px;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
+  margin-left: 350px;
 }
 
 h1 {
@@ -42,9 +43,7 @@ h1 {
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 15px;
-  min-height: 300px;
-  max-height: 400px;
-  margin-bottom: 20px;
+  flex-grow: 1;
   background-color: #fafafa;
   overflow-y: auto;
   display: flex;
@@ -55,6 +54,7 @@ h1 {
 .chat-form {
   display: flex;
   flex-direction: column;
+  margin-top: 20px;
 }
 
 textarea {
