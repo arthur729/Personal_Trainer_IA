@@ -186,6 +186,22 @@ export default {
         return 'Desculpe, ocorreu um problema ao gerar a resposta.';
       }
     },
+    async saveChatHistory(historyData) {
+      try {
+        const response = await fetch('http://localhost:5000/api/history', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(historyData),
+        });
+        if (!response.ok) {
+          throw new Error('Erro ao salvar o histórico');
+        }
+      } catch (error) {
+        console.error('Erro:', error);
+      }
+    },
     async handleSubmit() {
       const userInput = document.getElementById('user-input');
       const message = userInput.value;
@@ -197,6 +213,13 @@ export default {
       // Enviar mensagem e exibir resposta da IA
       const response = await this.sendMessage(message);
       chatOutput.innerHTML += `<div class="message ai"><strong>AI:</strong> ${response}</div>`;
+
+      // Salvar o histórico na nuvem
+      await this.saveChatHistory({
+        userMessage: message,
+        aiResponse: response,
+        timestamp: new Date().toISOString()
+      });
 
       chatOutput.scrollTop = chatOutput.scrollHeight;
       userInput.value = '';
