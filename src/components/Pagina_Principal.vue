@@ -213,6 +213,7 @@ export default {
       // Enviar mensagem e exibir resposta da IA
       const response = await this.sendMessage(message);
       chatOutput.innerHTML += `<div class="message ai"><strong>AI:</strong> ${response}</div>`;
+      
 
       // Salvar o histórico na nuvem
       await this.saveChatHistory({
