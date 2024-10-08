@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1>Chat com IA</h1>
+    <h1>BombaChat</h1>
     <div id="chat-output" class="chat-output"></div>
     <form id="chat-form" class="chat-form" @submit.prevent="handleSubmit">
       <textarea id="user-input" rows="4" placeholder="Digite sua resposta..." required></textarea>
@@ -17,11 +17,13 @@ body, html {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f0f0f0;
+
+  background-size: cover;
+  background-position: center;
 }
 
 .container {
-  background: #fff;
+  background: #ffffffe0;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   max-width: 600px;
