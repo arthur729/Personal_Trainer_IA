@@ -5,6 +5,7 @@
     <form id="chat-form" class="chat-form" @submit.prevent="handleSubmit">
       <textarea id="user-input" rows="4" placeholder="Digite sua resposta..." required></textarea>
       <button type="submit">Enviar</button>
+      <div class="footer-name">Arthur Warken Magalhães</div> <!-- Nome Adicionado -->
     </form>
   </div>
 </template>
@@ -132,6 +133,17 @@ button:hover {
   .message {
     max-width: 100%;
   }
+}
+
+.footer-name {
+  position: fixed; /* Fixa a posição do nome */
+  bottom: 10px; /* Distância do fundo da tela */
+  right: 10px; /* Distância da direita da tela */
+  font-size: 12px; /* Tamanho da fonte */
+  color: rgba(255, 255, 255, 0.7); /* Cor branca com leve transparência */
+  background-color: rgba(0, 0, 0, 0.5); /* Fundo preto semi-transparente para melhor legibilidade */
+  padding: 5px; /* Espaçamento interno */
+  border-radius: 5px; /* Bordas arredondadas */
 }
 </style>
 
