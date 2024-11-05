@@ -204,7 +204,7 @@ export default {
     async saveChatHistory(historyData) {
       try {
         //axios
-        const response = await fetch('http://localhost:5000/api/history', { // Usando o endpoint correto
+        const response = await fetch('https://api-backend-chatbot-4l9f.onrender.com/api/history', { // Usando o endpoint correto
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
