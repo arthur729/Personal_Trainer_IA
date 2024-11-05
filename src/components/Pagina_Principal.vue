@@ -5,10 +5,11 @@
     <form id="chat-form" class="chat-form" @submit.prevent="handleSubmit">
       <textarea id="user-input" rows="4" placeholder="Digite sua resposta..." required></textarea>
       <button type="submit">Enviar</button>
-      <div class="footer-name">Arthur Warken Magalhães</div> <!-- Nome Adicionado -->
+      <div class="footer-name">Arthur Warken Magalhães</div>
     </form>
   </div>
 </template>
+
 
 <style scoped>
 body, html {
@@ -154,7 +155,7 @@ export default {
   name: 'PaginaPrincipal',
   data() {
     return {
-      apiKey: "AIzaSyClrsUNIl7nnDV8-_MOEy_OU7yNgd8hu_g", // Substitua pela sua chave API real
+      apiKey: "AIzaSyClrsUNIl7nnDV8-_MOEy_OU7yNgd8hu_g",
       chatSession: null,
     };
   },
@@ -202,7 +203,8 @@ export default {
     },
     async saveChatHistory(historyData) {
       try {
-        const response = await fetch('http://localhost:5000/api/history', {
+        //axios
+        const response = await fetch('http://localhost:5000/api/history', { // Usando o endpoint correto
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

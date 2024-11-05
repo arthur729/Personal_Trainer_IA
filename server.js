@@ -1,25 +1,23 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors'); // Adiciona suporte para CORS
+const cors = require('cors');
 const bodyParser = require('body-parser');
 
-// Conexão com o MongoDB Atlas (substitua pelas suas credenciais)
-mongoose.connect('mongodb+srv://seuUsuario:suaSenha@seuCluster.mongodb.net/seuBancoDeDados?retryWrites=true&w=majority', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
+// Configuração do MongoDB Atlas
+const mongoURI = 'mongodb+srv://arthurwarken13:Y6sudIhqUtij1jFP@cluster0.f0mm2dl.mongodb.net/chatbot?retryWrites=true&w=majority';
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const conversationSchema = new mongoose.Schema({
-  userId: String, // ID do usuário
+  userId: String,
   messages: [{
-    sender: String, // Usuário ou bot
+    sender: String,
     text: String,
     timestamp: { type: Date, default: Date.now }
   }]
 });
 
 const loginSchema = new mongoose.Schema({
-  userId: String, // ID do usuário
+  userId: String,
   timestamp: { type: Date, default: Date.now },
   ip: String
 });
@@ -31,41 +29,59 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(cors());
-app.use(bodyParser.json()); // Permite analisar JSON no corpo da solicitação
+app.use(bodyParser.json());
 
-// Rota para salvar o histórico do chat
-app.post('/mensagem', async (req, res) => {
-  const novaConversa = new Conversation({
-    userId: req.body.userId, // Obter o ID do usuário da requisição
-    messages: [{
-      sender: 'usuário',
-      text: req.body.mensagem,
-      timestamp: Date.now()
-    }]
-  });
-  await novaConversa.save();
-  res.json(novaConversa);
+// Rota para salvar histórico de conversas do chatbot
+app.post('/api/history', async (req, res) => {
+  const { userId, userMessage, aiResponse, timestamp } = req.body;
+
+  if (!userMessage || !aiResponse || !timestamp) {
+    return res.status(400).json({ error: 'Dados inválidos' });
+  }
+
+  try {
+    const novaConversa = await Conversation.findOneAndUpdate(
+      { userId },
+      { $push: { messages: { sender: 'usuário', text: userMessage, timestamp } } },
+      { new: true, upsert: true }
+    );
+
+    // Salvando resposta da IA na conversa
+    novaConversa.messages.push({ sender: 'IA', text: aiResponse, timestamp });
+    await novaConversa.save();
+
+    res.json({ message: 'Histórico salvo com sucesso', novaConversa });
+  } catch (error) {
+    console.error('Erro ao salvar histórico:', error);
+    res.status(500).json({ error: 'Erro ao salvar histórico' });
+  }
 });
 
 // Rota para registrar login
-app.post('/login', async (req, res) => {
-  const novoLogin = new Login({
-    userId: req.body.userId, // Obter o ID do usuário da requisição
-    ip: req.body.ip, // Obter o IP do usuário da requisição
-  });
-  await novoLogin.save();
-  res.json({ message: 'Login registrado com sucesso!' });
+app.post('/api/login', async (req, res) => {
+  const { userId, ip } = req.body;
+
+  if (!userId || !ip) {
+    return res.status(400).json({ error: 'Dados inválidos' });
+  }
+
+  try {
+    const novoLogin = new Login({ userId, ip });
+    await novoLogin.save();
+    res.json({ message: 'Login registrado com sucesso!' });
+  } catch (error) {
+    console.error('Erro ao registrar login:', error);
+    res.status(500).json({ error: 'Erro ao registrar login' });
+  }
 });
 
-// Exemplo de rota para recuperar histórico de conversas (implemente a lógica de busca)
-app.get('/conversas/:userId', async (req, res) => {
+// Rota para recuperar histórico de conversas
+app.get('/api/conversas/:userId', async (req, res) => {
   const userId = req.params.userId;
 
   try {
-    // Busca por todas as conversas com o userId correspondente
     const conversas = await Conversation.find({ userId });
 
-    // Verifica se foram encontradas conversas
     if (conversas.length > 0) {
       res.json(conversas);
     } else {
@@ -76,6 +92,8 @@ app.get('/conversas/:userId', async (req, res) => {
     res.status(500).json({ message: 'Erro ao buscar conversas.' });
   }
 });
+
+// Inicia o servidor
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);
 });
